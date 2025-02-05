@@ -1,0 +1,221 @@
+# 1. No - there are some issues.
+
+# 2. How would you change the given response to make it helpful? Be detailed and call out all issues in the response, including the code! If there are no issues, write N/A.
+"""
+1. 불필요한 주석이 있음.
+login 함수 위에 Never alter this login function 주석이 있어야 된다고 했지만
+그 이외에는 없어야함
+
+2. 로그인 검증 방식이 잘못됨.
+if password == password: 는 무조건 True로 통과하게 됨
+데이터 베이스에 저장된 비밀번호와 기존 비밀번호를 비교해야함
+
+3.로그인 성공 실패에서 함수 호출 여부가 잘못됨.
+increment_failed_attempts랑 reset_failed_attempts는 
+각각 로그인 실패시, 로그인 성공시 호출 되어야 하는데 현재는 엉망 진창임
+
+4.테스트 케이스가 잘못됨
+helios의  "password321" 테스트가 누락 되었음.
+"""
+# 3. Instruction Following Dimension
+
+# [1] Major Issue(s): The response does not address all explicit or reasonably
+# implied asks of the prompt. It fails to address all constraints, circumvents, or violates key components intended to serve the requests
+
+# [2] Minor Issue(s) The response addresses most explicit or reasonably
+# implied asks of the prompt, though there minor details are missing. It does not 
+# fulfill some of the constraints intened to serve the request
+
+# [3] No Issues: The response addresses all explicit and reasonably implied
+# asks of the prompt It fulfills the requests within the prompt, including the
+# constraints intened to serve those requests
+
+# Rate Instruction Following
+# The response has IF issues 
+# The response has does not have IF issues
+
+# 4. Rate Instruction Following
+# [1] Major Issue(s): There are major errors in claims in the response. Code is
+# not executable or does not provide correct outputs
+
+# [2] Minor Issue(s): There are minor erros in claims in the response, but the
+# code is executable and produces generally correct outputs
+
+# [3] No Issues: All claims in the response are truthful and correct, and the code
+# is executable and produces correct outputs
+
+# Rate Truthfulness
+# The response has truthfulness issues
+# The response does not have truthfulness issues
+
+# Write an ideal response to the prompt question here! Ensure you correct all issues that you found. If you found no issues, write N/A.
+
+```python
+
+import pandas as pd
+
+
+
+class User:
+
+    def __init__(self, user_id, username, password, failed_attempts=0, is_locked=False):
+
+        self.user_id = user_id
+
+        self.username = username
+
+        self.password = password
+
+        self.failed_attempts = failed_attempts
+
+        self.is_locked = is_locked
+
+
+
+    def reset_failed_attempts(self):
+
+        self.failed_attempts = 0
+
+        print(f"Failed attempts reset for user {self.username}.")
+
+
+
+    def increment_failed_attempts(self):
+
+        self.failed_attempts += 1
+
+        print(f"Failed attempts for {self.username}: {self.failed_attempts}")
+
+        if self.failed_attempts >= 3:
+
+            self.lock_account()
+
+
+
+    def lock_account(self):
+
+        self.is_locked = True
+
+        print(f"Account for {self.username} has been locked due to too many failed login attempts.")
+
+
+
+class AuthenticationSystem:
+
+    def __init__(self):
+
+        self.users = pd.DataFrame(columns=["user_id", "username", "password", "failed_attempts_left", "is_locked"])
+
+
+
+    def register_user(self, user_id, username, password):
+
+        new_user = User(user_id, username, password)
+
+        self.users = pd.concat([self.users, pd.DataFrame({
+
+            "user_id": [user_id], 
+
+            "username": [username], 
+
+            "password": [password], 
+
+            "failed_attempts": [0], 
+
+            "is_locked": [False]
+
+        })], ignore_index=True)
+
+        print(f"User {username} registered successfully.")
+
+
+
+    # Never alter this login function
+
+    def login(self, username, password):
+
+        user_row = self.users[self.users['username'] == username]
+
+        if user_row.empty:
+
+            print(f"User {username} not found.")
+
+            return
+
+
+
+        user = User(user_row['user_id'].values[0], user_row['username'].values[0], user_row['password'].values[0], 
+
+                    user_row['failed_attempts'].values[0], user_row['is_locked'].values[0])
+
+        
+
+        if user.is_locked:
+
+            print(f"Account for {username} is locked. Please contact support.")
+
+            return
+
+
+
+        if password == user_row['password'].values[0]:
+
+            user.reset_failed_attempts()
+
+            self.update_user(user)
+
+            print(f"User {username} logged in successfully.")
+
+        else:
+
+            user.increment_failed_attempts()
+
+            self.update_user(user)
+
+
+
+    def update_user(self, user):
+
+        self.users.loc[self.users['username'] == user.username, 'failed_attempts'] = user.failed_attempts
+
+        self.users.loc[self.users['username'] == user.username, 'is_locked'] = user.is_locked
+
+        print(f"User {user.username}'s data updated.")
+
+
+
+auth_system = AuthenticationSystem()
+
+auth_system.register_user(1, "neena", "password123") 
+
+auth_system.register_user(2, "helios", "mysecurepassword") 
+
+
+
+auth_system.login("neena", "password321")  
+
+auth_system.login("Neena", "password123")  
+
+auth_system.login("neena", "password321")  
+
+auth_system.login("neena", "password123")   
+
+
+auth_system.login("helios", "password321")
+
+auth_system.login("helios", "mysecurepassword")
+```
+
+# If you provided a rewrite, summarize the changes/fixed you made. If you did not provide a rewrite, write "N/A".
+
+"""
+1. 불필요한 주석을 제거 했음
+login 함수 위에 Never alter this login function 주석이 있어야 된다고 했지만
+그 이외에는 없어야함
+
+2. 로그인 검증 방식을 정상적으로 바꿨음
+
+3. 로그인 성공, 실패시 호출되는 함수들 실패 횟수 올라가던지 초기화 하는 것들을 정상화 시킴
+
+4. helios의  "password321" 테스트 케이스를 추가함
+"""

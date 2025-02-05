@@ -107,7 +107,7 @@ encoded_config = urllib.parse.quote(json_str)
 
 # QuickChart URL 생성
 # 배경색은 구글 크롬 다크모드에 맞춘 "#202124", 가로 넓이는 1000px로 지정
-url = f"https://quickchart.io/chart?c={encoded_config}&bkg=%23202124&width=700"
+url = f"https://quickchart.io/chart?c={encoded_config}&bkg=%23202124&width=700&devicePixelRatio=2"
 
 print("QuickChart URL:", url)
 webbrowser.open(url)
