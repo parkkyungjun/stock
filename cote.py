@@ -70,7 +70,7 @@ def solution2(pouches):
             jelly_cnt -= c.get(jelly, 0)
 
         answers.append(answer)
-    return max(answer)
+    return max(answers)
 
 import random
 
