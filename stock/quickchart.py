@@ -2,6 +2,8 @@ import json
 import urllib.parse
 import webbrowser
 import math
+import requests
+
 # Chart.js 구성 (Python 딕셔너리)
 
 data1_raw = [1000000, 3000000, 4000000, 5700000,
@@ -111,3 +113,8 @@ url = f"https://quickchart.io/chart?c={encoded_config}&bkg=%23202124&width=700&d
 
 print("QuickChart URL:", url)
 webbrowser.open(url)
+
+response = requests.get(url)
+
+with open("chart.png", "wb") as file:
+    file.write(response.content)
