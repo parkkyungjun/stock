@@ -1,4 +1,4 @@
-
+문제있음
 
 
 1. data가 None일때 오류 반환해야함
@@ -6,8 +6,8 @@ if data is not None: -> if data is None:
     
     
 
-문제있음
-문제있음
+지시 사항 문제 없음
+신뢰성 문제 있음
 
 
 app.py:
